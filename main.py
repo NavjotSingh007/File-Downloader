@@ -1,27 +1,36 @@
-import urllib.request
+import requests
+import os
 
-while True:
+def get_data(url):
+    return requests.get(url)
 
-    full_name = input("Enter the full name of file ")
-    full_name = full_name.strip()
+def write_to_file(response, file_name, dir_name):
+    with open(dir_name + "/" + file_name, 'wb') as f:
+        f.write(response.content)
 
-    if full_name.__contains__("."):
-
-        while True:
-            try:
-                   url = input("Enter the url of file ")
-                   url = url.strip()
-                   urllib.request.urlretrieve(url, full_name)
-                   break
-            except ValueError:
-                   print("Please check your url or internet connection")
-        print(full_name," downloaded completed successfully")
-        break
-
-    else:
-        print("Please also write extension of "+full_name)
-        continue
+def create_directory():
+    if not os.path.exists('Downloads'):
+        os.makedirs('Downloads')
 
 
+print ('Press Ctrl + C to quit')
+try:
+    try:
+        create_directory()
+    except Exception as e:
+        print(e)
+
+    while True:
+        dir_name = 'Downloads'
+        url = input("Enter Url of the file: ")
+        file_name = url.split('/')[-1]
+        try:
+            response = get_data(url)
+            write_to_file(response, file_name, dir_name)
+            print("Successfully Downloaded - " + file_name)
+        except Exception as e:
+            print(e)
 
 
+except KeyboardInterrupt:
+    print("Bye!")
