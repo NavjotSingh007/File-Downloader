@@ -1,36 +1,49 @@
-import requests
-import os
+from tkinter import *
+import lib
+import IPython
 
-def get_data(url):
-    return requests.get(url)
+def display():
+    status = lib.download_file(v.get())
+    status_message.set(status)
 
-def write_to_file(response, file_name, dir_name):
-    with open(dir_name + "/" + file_name, 'wb') as f:
-        f.write(response.content)
-
-def create_directory():
-    if not os.path.exists('Downloads'):
-        os.makedirs('Downloads')
+def close():
+    win.destroy()
 
 
-print ('Press Ctrl + C to quit')
-try:
-    try:
-        create_directory()
-    except Exception as e:
-        print(e)
+def makeWindow () :
+    win = Tk()
 
-    while True:
-        dir_name = 'Downloads'
-        url = input("Enter Url of the file: ")
-        file_name = url.split('/')[-1]
-        try:
-            response = get_data(url)
-            write_to_file(response, file_name, dir_name)
-            print("Successfully Downloaded - " + file_name)
-        except Exception as e:
-            print(e)
+    global v, status_message
+
+    frame1 = Frame(win)
+    frame1.pack(pady=30)
+
+    v = StringVar()
+    e = Entry(frame1, textvariable=v)
+    e.pack(pady=30)
+
+    frame2 = Frame(win)
+    frame2.pack()
+
+    start_button = Button(frame2, text='Start', command=display).pack(side=LEFT, padx=20)
+    close_button = Button(frame2, text='Close', command=close).pack(side=RIGHT, padx=20)
+
+    frame3 = Frame(win)
+    frame3.pack()
+
+    status_message = StringVar()
+    l = Label(frame3, textvariable=status_message).pack()
 
 
-except KeyboardInterrupt:
-    print("Bye!")
+    win.wm_title('File Downloader')
+    win.resizable(width='FALSE', height='FALSE')
+    win.wm_geometry("%dx%d%+d%+d" % (720, 480, 0, 0))
+
+    return win
+
+
+win = makeWindow()
+status_message.set('Ready!')
+win.mainloop()
+
+
