@@ -3,7 +3,8 @@ import lib
 import IPython
 
 def display():
-    status = lib.download_file(v.get())
+    convert = convert_to_pdf.get()
+    status = lib.download_file(v.get(), convert)
     status_message.set(status)
 
 def close():
@@ -13,7 +14,7 @@ def close():
 def makeWindow () :
     win = Tk()
 
-    global v, status_message
+    global v, status_message, convert_to_pdf
 
     frame1 = Frame(win)
     frame1.pack(pady=30)
@@ -25,14 +26,20 @@ def makeWindow () :
     frame2 = Frame(win)
     frame2.pack()
 
-    start_button = Button(frame2, text='Start', command=display).pack(side=LEFT, padx=20)
-    close_button = Button(frame2, text='Close', command=close).pack(side=RIGHT, padx=20)
+    convert_to_pdf = IntVar()
+
+    check_box = Checkbutton(frame2, text="convert To Pdf", variable=convert_to_pdf).pack()
 
     frame3 = Frame(win)
     frame3.pack()
+    start_button = Button(frame3, text='Start', command=display).pack(side=LEFT, padx=20)
+    close_button = Button(frame3, text='Close', command=close).pack(side=RIGHT, padx=20)
+
+    frame4 = Frame(win)
+    frame4.pack()
 
     status_message = StringVar()
-    l = Label(frame3, textvariable=status_message).pack()
+    l = Label(frame4, textvariable=status_message).pack()
 
 
     win.wm_title('File Downloader')
